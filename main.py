@@ -33,4 +33,8 @@ async def joined(ctx, member: discord.Member):
 async def adios(ctx):
     await ctx.send(f"luego nos vemos {ctx.author.mention}, cuídate!!")
 
+@bot.command()
+async def ping(ctx):
+    await ctx.send(f"🏓 Pong! Latencia: {round(bot.latency * 1000)}ms")
+
 client.run(TOKEN)
