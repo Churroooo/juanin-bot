@@ -1,6 +1,7 @@
 import discord
 import random
 import os
+import requests
 from discord.ext import commands
 
 intents = discord.Intents.default()
@@ -10,10 +11,10 @@ description = '''An example bot to showcase the discord.ext.commands extension
 module.'''
 
 
-bot = commands.Bot(command_prefix='?', description=description, intents=intents)
+bot = commands.Bot(command_prefix='?!', description=description, intents=intents)
 client = discord.Client(intents=intents)
 
-TOKEN = "aqui tu token"
+TOKEN = "tu token aqui"
 
 @client.event
 async def on_ready():
@@ -96,12 +97,25 @@ async def moneda(ctx):
     if flip == 0:
         await ctx.send("uuy, cara. ¿quien va a ser el que termine pagando la cuenta?")
     else:
-        await ctx.send("cruz, ¿quien se va a rapar?")
+        await ctx.send("cruz, ¿quien se va a quedar pelon?")
 
 @bot.command()
 async def dado(ctx):
     dado = random.randint(1, 6)
     await ctx.send(f"🎲 Has sacado un {dado}")
+
+def get_animal_picture_url():    
+    url = ' https://zoo-animal-api.herokuapp.com/'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+
+@bot.command(name="animal")
+async def animal(ctx):
+    '''Una vez que llamamos al comando duck, 
+    el programa llama a la función get_duck_image_url'''
+    image_url = get_animal_picture_url()
+    await ctx.send(image_url)
 
 
 bot.run(TOKEN)
