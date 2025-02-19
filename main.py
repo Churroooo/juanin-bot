@@ -10,10 +10,10 @@ description = '''An example bot to showcase the discord.ext.commands extension
 module.'''
 
 
-bot = commands.Bot(command_prefix='!', description=description, intents=intents)
+bot = commands.Bot(command_prefix='?', description=description, intents=intents)
 client = discord.Client(intents=intents)
 
-TOKEN = "MTMzMzA5Mzg3MTkwMjc4NTU3Nw.G8M5QX.1vAst8PHG5YOSF2PuRDKxOPXpw7BgJUme0ku9Q"
+TOKEN = "aqui tu token"
 
 @client.event
 async def on_ready():
@@ -63,17 +63,24 @@ async def hola(ctx):
 async def como_estas(ctx):
     await ctx.send(f"yo increíble. y tu, {ctx.author.mention}, ¿cómo estás?")
 
-@bot.command()
-async def joined(ctx, member: discord.Member):
-    """dioss, alguien nuevo. ey, no sean penosos, ¡saluden! pero... ¿nos trajiste algo?"""
-    await ctx.send(f'{member.name} joined {discord.utils.format_dt(member.joined_at)}')
+@client.event
+async def on_member_join(member):
+    channel = discord.utils.get(member.guild.text_channels, name='general')
+    if channel:
+        await channel.send(f'{member.name} joined {discord.utils.format_dt(member.joined_at)}')
 
 @bot.command()
 async def meme(ctx):
     img_meme = random.choice(os.listdir("img"))
     with open(f"img/{img_meme}", "rb") as f:
         picture = discord.File(f)
-    await ctx.send(file=picture) #no he logrado que este comando funcione. si tú puedes lograrlo, hazmelo saber a mi github!
+    await ctx.send(file=picture)
+
+@client.event
+async def on_member_remove(member):
+    channel = discord.utils.get(member.guild.text_channels, name='general')
+    if channel:
+        await channel.send(f'noo, se nos fue un grande:( {discord.utils.format_dt(member.joined_at)}')
 
 @bot.command()
 async def ping(ctx):
@@ -82,6 +89,19 @@ async def ping(ctx):
 @bot.command()
 async def adios(ctx):
     await ctx.send(f"luego nos vemos {ctx.author.mention}, cuídate!!")
+
+@bot.command()
+async def moneda(ctx):
+    flip = random.randint(0, 1)
+    if flip == 0:
+        await ctx.send("uuy, cara. ¿quien va a ser el que termine pagando la cuenta?")
+    else:
+        await ctx.send("cruz, ¿quien se va a rapar?")
+
+@bot.command()
+async def dado(ctx):
+    dado = random.randint(1, 6)
+    await ctx.send(f"🎲 Has sacado un {dado}")
 
 
 bot.run(TOKEN)
